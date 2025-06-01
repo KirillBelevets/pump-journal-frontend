@@ -6,14 +6,14 @@ import { useAuth } from "../context/AuthContext";
 import { Input } from "../../components/ui/input";
 import { Button } from "../../components/ui/button";
 
+const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+
 export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const router = useRouter();
   const { setToken } = useAuth();
-
-  const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
