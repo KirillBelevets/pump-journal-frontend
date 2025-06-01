@@ -2,12 +2,8 @@
 
 import * as React from "react";
 import { ClockIcon } from "lucide-react";
-import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-} from "@/components/ui/popover";
-import { Button } from "@/components/ui/button";
+import { Popover, PopoverTrigger, PopoverContent } from "./popover";
+import { Button } from "./button";
 import clsx from "clsx";
 
 interface TimePickerProps {

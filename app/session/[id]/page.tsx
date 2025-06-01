@@ -2,11 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
-import { useAuth } from "@/app/context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 // import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Button } from "../../../components/ui/button";
 import TrainingSessionEditForm from "../new/TrainingSessionEditForm";
-import { TrainingSession, TrainingSessionFormValues } from "@/types/training";
+import {
+  TrainingSession,
+  TrainingSessionFormValues,
+} from "../../../types/training";
 
 export default function SessionDetailPage() {
   const router = useRouter();

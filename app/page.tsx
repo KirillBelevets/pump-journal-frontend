@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useAuth } from "./context/AuthContext";
-import { Button } from "@/components/ui/button";
+import { Button } from "../components/ui/button";
 
 export default function Home() {
   const { token } = useAuth();

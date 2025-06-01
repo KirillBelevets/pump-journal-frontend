@@ -2,13 +2,13 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/app/context/AuthContext";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { useAuth } from "../../context/AuthContext";
+import { Input } from "../../../components/ui/input";
+import { Button } from "../../../components/ui/button";
 import ExerciseInput, { Exercise } from "./ExerciseInput";
-import { Label } from "@/components/ui/label";
-import { DatePicker } from "@/components/ui/date-picker";
-import { TimePicker } from "@/components/ui/time-picker";
+import { Label } from "../../../components/ui/label";
+import { DatePicker } from "../../../components/ui/date-picker";
+import { TimePicker } from "../../../components/ui/time-picker";
 
 const daysOfWeek = [
   "Sunday",

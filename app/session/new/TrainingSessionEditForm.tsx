@@ -1,12 +1,16 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { DatePicker } from "@/components/ui/date-picker";
-import { TimePicker } from "@/components/ui/time-picker";
-import { Exercise, TrainingSessionFormValues, Set } from "@/types/training";
+import { Input } from "../../../components/ui/input";
+import { Button } from "../../../components/ui/button";
+import { Label } from "../../../components/ui/label";
+import { DatePicker } from "../../../components/ui/date-picker";
+import { TimePicker } from "../../../components/ui/time-picker";
+import {
+  Exercise,
+  TrainingSessionFormValues,
+  Set,
+} from "../../../types/training";
 
 const daysOfWeek = [
   "Sunday",

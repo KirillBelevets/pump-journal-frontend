@@ -3,9 +3,9 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../context/AuthContext";
-import { Button } from "@/components/ui/button";
+import { Button } from "../../components/ui/button";
 import Link from "next/link";
-import { TrainingSession } from "@/types/training";
+import { TrainingSession } from "../../types/training";
 import { DashboardFilters, DashboardFilterState } from "./DashboardFilters";
 
 export default function DashboardPage() {

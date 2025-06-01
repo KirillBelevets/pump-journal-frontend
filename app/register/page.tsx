@@ -3,30 +3,30 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../context/AuthContext";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Input } from "../../components/ui/input";
+import { Button } from "../../components/ui/button";
 
-export default function LoginPage() {
+export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const router = useRouter();
   const { setToken } = useAuth();
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
     try {
-      const res = await fetch("http://localhost:3000/auth/login", {
+      const res = await fetch("http://localhost:3000/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
 
       if (!res.ok) {
-        const errData = await res.json();
-        throw new Error(errData.message || "Login failed");
+        const err = await res.json();
+        throw new Error(err.message || "Registration failed");
       }
 
       const data = await res.json();
@@ -36,15 +36,15 @@ export default function LoginPage() {
       if (err instanceof Error) {
         setError(err.message);
       } else {
-        setError("Unknown error");
+        setError("Something went wrong");
       }
     }
   };
 
   return (
     <div className="max-w-md mx-auto mt-20 p-4 border rounded-xl shadow">
-      <h1 className="text-2xl font-bold mb-4">Login</h1>
-      <form onSubmit={handleLogin} className="space-y-4">
+      <h1 className="text-2xl font-bold mb-4">Register</h1>
+      <form onSubmit={handleRegister} className="space-y-4">
         <Input
           type="email"
           placeholder="Email"
@@ -54,17 +54,14 @@ export default function LoginPage() {
         />
         <Input
           type="password"
-          placeholder="Password"
+          placeholder="Password (min 6 characters)"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
         />
         {error && <p className="text-red-500 text-sm">{error}</p>}
-        <Button
-          type="submit"
-          className="w-full h-10 rounded-full py-3 font-bold text-white bg-gray-500 hover:bg-yellow-400 hover:text-black shadow-lg transition-all duration-200 hover:scale-105"
-        >
-          Log In
+        <Button type="submit" className="w-full">
+          Create Account
         </Button>
       </form>
     </div>
