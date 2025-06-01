@@ -5,14 +5,8 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "../context/AuthContext";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-
-interface TrainingSession {
-  _id: string;
-  date: string;
-  goal: string;
-  dayOfWeek?: string;
-  exercises: { name: string }[];
-}
+import { TrainingSession } from "@/types/training";
+import { DashboardFilters, DashboardFilterState } from "./DashboardFilters";
 
 export default function DashboardPage() {
   const { token, setToken } = useAuth();
@@ -20,6 +14,13 @@ export default function DashboardPage() {
   const [sessions, setSessions] = useState<TrainingSession[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [filters, setFilters] = useState<DashboardFilterState>({
+    dateFrom: undefined,
+    dateTo: undefined,
+    dayOfWeek: "any",
+    exercise: "",
+    goal: "",
+  });
 
   useEffect(() => {
     if (!token) {
@@ -57,30 +58,67 @@ export default function DashboardPage() {
   if (!token) return <p className="text-center mt-20">Checking auth...</p>;
   if (loading) return <p className="text-center mt-20">Loading...</p>;
 
+  const filteredSessions = sessions.filter((session) => {
+    // Assume session.date is a string like "2025-06-01"
+    const sessionDate = session.date ? new Date(session.date) : null;
+
+    if (filters.dateFrom && sessionDate && sessionDate < filters.dateFrom)
+      return false;
+    if (filters.dateTo && sessionDate && sessionDate > filters.dateTo)
+      return false;
+    if (filters.dayOfWeek !== "any" && session.dayOfWeek !== filters.dayOfWeek)
+      return false;
+    if (
+      filters.exercise &&
+      !session.exercises.some((e) =>
+        e.name.toLowerCase().includes(filters.exercise.toLowerCase())
+      )
+    )
+      return false;
+    if (
+      filters.goal &&
+      !session.goal?.toLowerCase().includes(filters.goal.toLowerCase())
+    )
+      return false;
+    return true;
+  });
+
   return (
-    <div className="max-w-2xl mx-auto mt-10 space-y-6">
+    <div className="max-w-2xl mx-auto mt-10 px-2 space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Pump Journal</h1>
-        <Button onClick={handleLogout}>Logout</Button>
+        <h1 className="text-3xl font-bold text-teal-700">Pump Journal</h1>
+        <Button
+          onClick={handleLogout}
+          className="bg-gray-200 hover:bg-yellow-400 hover:text-black text-gray-800 font-bold transition"
+        >
+          Logout
+        </Button>
       </div>
+
+      <DashboardFilters filters={filters} setFilters={setFilters} />
 
       {error && <p className="text-red-500">{error}</p>}
 
       <div className="space-y-4">
-        {sessions.length === 0 ? (
+        {filteredSessions.length === 0 ? (
           <p className="text-muted-foreground">No sessions logged yet.</p>
         ) : (
-          sessions.map((session) => (
-            <Link key={session._id} href={`/session/${session._id}`}>
-              <div className="border rounded p-4 cursor-pointer hover:shadow-lg hover:bg-teal-50 transition">
-                <div className="flex justify-between items-center">
-                  <div>
-                    <span className="font-semibold">
+          filteredSessions.map((session) => (
+            <Link key={session._id} href={`/session/${session._id}`} passHref>
+              <div
+                className="border rounded-2xl p-4 cursor-pointer bg-white/90 hover:bg-accent/30 hover:shadow-xl transition flex flex-col gap-1"
+                style={{ boxShadow: "0 4px 16px rgba(45, 212, 191, 0.12)" }}
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-2">
+                    <span className="font-semibold text-teal-700 text-lg">
                       {session.date.slice(0, 10)}
-                    </span>{" "}
-                    <span className="text-muted-foreground">
-                      {session.dayOfWeek}
                     </span>
+                    {session.dayOfWeek && (
+                      <span className="bg-yellow-100 text-yellow-700 font-bold px-2 py-1 rounded text-xs uppercase tracking-wider">
+                        {session.dayOfWeek}
+                      </span>
+                    )}
                     <span>
                       {session.dayOfWeek === "Sunday"
                         ? "☀️"
@@ -89,14 +127,21 @@ export default function DashboardPage() {
                         : "🏋️"}
                     </span>
                   </div>
-                  <span className="italic">{session.goal}</span>
+                  {session.goal && (
+                    <span className="italic text-primary font-semibold">
+                      {session.goal}
+                    </span>
+                  )}
                 </div>
-                <div className="mt-2 text-sm">
+                <div className="text-sm mt-1 text-gray-700">
                   <strong>Exercises:</strong>{" "}
                   {session.exercises.map((e) => e.name).join(", ")}
                 </div>
-                <div className="text-xs text-gray-500">
-                  {session.exercises.length} exercises
+                <div className="flex gap-3 items-center mt-1 text-xs text-gray-500">
+                  <span className="bg-teal-50 text-teal-700 rounded px-2 py-0.5">
+                    {session.exercises.length} exercises
+                  </span>
+                  <span>Click for details &rarr;</span>
                 </div>
               </div>
             </Link>
@@ -104,7 +149,14 @@ export default function DashboardPage() {
         )}
       </div>
 
-      <Button onClick={() => router.push("/session/new")}>+ Add Session</Button>
+      <div className="pb-6 pt-2">
+        <Button
+          onClick={() => router.push("/session/new")}
+          className="w-full rounded-full py-3 font-bold text-gray-900 bg-gray-300 hover:bg-yellow-400 hover:text-black shadow-md transition-colors"
+        >
+          + Add Session
+        </Button>
+      </div>
     </div>
   );
 }

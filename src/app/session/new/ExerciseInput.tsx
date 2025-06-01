@@ -4,6 +4,19 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Label } from "@radix-ui/react-label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Info } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export interface Set {
   reps: number;
@@ -25,7 +38,14 @@ interface Props {
   index: number;
 }
 
-const TEMPO_OPTIONS = ["2-1-2", "2-0-2", "3-1-3", "3-0-1", "1-1-1", "Custom"];
+const TEMPO_OPTIONS = [
+  { value: "2-0-2", label: "2-0-2 (Normal speed)" },
+  { value: "2-1-2", label: "2-1-2 (Pause bottom)" },
+  { value: "3-0-1", label: "3-0-1 (Explosive up)" },
+  { value: "3-1-3", label: "3-1-3 (Controlled)" },
+  { value: "1-0-1", label: "1-0-1 (Fast)" },
+  { value: "custom", label: "Custom…" },
+];
 
 export default function ExerciseInput({
   exercise,
@@ -35,9 +55,9 @@ export default function ExerciseInput({
 }: Props) {
   // Always controlled
   const [localName, setLocalName] = useState(exercise.name ?? "");
-  const [customTempo, setCustomTempo] = useState(
-    TEMPO_OPTIONS.includes(exercise.tempo) ? "" : exercise.tempo ?? ""
-  );
+  // const [customTempo, setCustomTempo] = useState(
+  //   TEMPO_OPTIONS.includes(exercise.tempo) ? "" : exercise.tempo ?? ""
+  // );
 
   const handleSetChange = (setIndex: number, updated: Set) => {
     const updatedSets = exercise.sets.map((s, i) =>
@@ -60,17 +80,6 @@ export default function ExerciseInput({
     });
   };
 
-  // Tempo select logic
-  const handleTempoChange = (value: string) => {
-    if (value === "Custom") {
-      setCustomTempo("");
-      setExercise({ ...exercise, tempo: "" });
-    } else {
-      setCustomTempo("");
-      setExercise({ ...exercise, tempo: value });
-    }
-  };
-
   return (
     <section className="border p-4 rounded-xl space-y-4 bg-slate-50 mb-6 shadow">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
@@ -89,54 +98,55 @@ export default function ExerciseInput({
               setLocalName(e.target.value);
               setExercise({ ...exercise, name: e.target.value });
             }}
-            className="font-semibold"
           />
         </div>
         <Button
           type="button"
-          variant="destructive"
-          className="h-10 mt-2 sm:mt-0 sm:ml-2"
+          variant="outline"
+          className="h-10 mt-2 sm:mt-0 sm:ml-2 bg-gray-500 text-white hover:bg-yellow-400 hover:text-black font-bold rounded-full shadow-lg transition-all duration-200 hover:scale-105"
           onClick={removeExercise}
         >
           Remove Exercise
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         {/* Tempo as select */}
-        <div className="flex flex-col">
+        <div className="flex flex-col relative">
           <Label
             htmlFor={`tempo-${index}`}
-            className="text-xs font-medium mb-1"
+            className="text-xs font-medium mb-1 flex items-center gap-1"
           >
             Tempo
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Info className="h-4 w-4 text-gray-400 cursor-pointer" />
+              </TooltipTrigger>
+              <TooltipContent>
+                Tempo: <b>Eccentric / Pause / Concentric</b>
+                <br />
+                Example: <b>3-1-2</b> = 3s down, 1s pause, 2s up
+              </TooltipContent>
+            </Tooltip>
           </Label>
-          <select
-            id={`tempo-${index}`}
-            className="w-full rounded-md border border-gray-300 px-2 py-2 bg-white text-gray-800"
-            value={
-              TEMPO_OPTIONS.includes(exercise.tempo) ? exercise.tempo : "Custom"
-            }
-            onChange={(e) => handleTempoChange(e.target.value)}
+          <Select
+            value={exercise.tempo}
+            onValueChange={(v) => setExercise({ ...exercise, tempo: v })}
           >
-            {TEMPO_OPTIONS.map((opt) => (
-              <option key={opt} value={opt}>
-                {opt === "Custom" ? "Custom…" : opt}
-              </option>
-            ))}
-          </select>
-          {exercise.tempo === "" && (
-            <Input
-              className="mt-2"
-              placeholder="Custom tempo"
-              value={customTempo}
-              onChange={(e) => {
-                setCustomTempo(e.target.value);
-                setExercise({ ...exercise, tempo: e.target.value });
-              }}
-            />
-          )}
+            <SelectTrigger className="h-10 px-4 rounded-full bg-slate-50 border border-gray-300 shadow-sm focus:border-yellow-200 focus:ring-2 focus:ring-yellow-100 font-semibold text-gray-900 transition-all duration-150 placeholder-gray-400">
+              <SelectValue placeholder="Select tempo..." />
+            </SelectTrigger>
+
+            <SelectContent>
+              {TEMPO_OPTIONS.filter((opt) => !!opt.value).map((opt) => (
+                <SelectItem key={opt.value} value={opt.value}>
+                  {opt.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
+
         {/* Rest */}
         <div className="flex flex-col">
           <Label htmlFor={`rest-${index}`} className="text-xs font-medium mb-1">
@@ -157,20 +167,21 @@ export default function ExerciseInput({
           />
         </div>
         {/* Comment */}
-        <div className="flex flex-col">
+        <div className="flex flex-col mt-2">
           <Label
             htmlFor={`comment-${index}`}
             className="text-xs font-medium mb-1"
           >
-            Comment
+            Notes
           </Label>
-          <Input
+          <textarea
             id={`comment-${index}`}
-            placeholder="Optional comment for all sets"
+            placeholder="Any notes for this exercise…"
             value={exercise.comment ?? ""}
             onChange={(e) =>
               setExercise({ ...exercise, comment: e.target.value })
             }
+            className="w-full min-h-[44px] max-h-[120px] rounded-full px-4 py-2 bg-slate-50 border border-gray-300 shadow-sm font-semibold text-gray-900 transition-all duration-150 focus:border-yellow-400 focus:ring-2 focus:ring-yellow-200 placeholder-gray-400 resize-y"
           />
         </div>
       </div>
@@ -191,6 +202,7 @@ export default function ExerciseInput({
               </Label>
               <Input
                 id={`reps-${index}-${setIndex}`}
+                className="h-10 px-4 py-2 rounded-full bg-slate-50 border border-gray-300 shadow-sm focus:border-yellow-400 focus:ring-2 focus:ring-yellow-200 font-semibold text-gray-900 transition-all duration-150 placeholder-gray-400"
                 type="number"
                 inputMode="numeric"
                 pattern="[0-9]*"
@@ -214,6 +226,7 @@ export default function ExerciseInput({
               </Label>
               <Input
                 id={`weight-${index}-${setIndex}`}
+                className="h-10 px-4 py-2 rounded-full bg-slate-50 border border-gray-300 shadow-sm focus:border-yellow-400 focus:ring-2 focus:ring-yellow-200 font-semibold text-gray-900 transition-all duration-150 placeholder-gray-400"
                 type="number"
                 inputMode="numeric"
                 pattern="[0-9]*"
@@ -230,8 +243,8 @@ export default function ExerciseInput({
             </div>
             <Button
               type="button"
-              variant="destructive"
-              className="col-span-2 mt-2"
+              variant="outline"
+              className="col-span-2 mt-2 h-10 w-full sm:w-auto bg-gray-500 text-white hover:bg-yellow-400 hover:text-black font-bold rounded-full shadow-lg transition-all duration-200 hover:scale-105"
               onClick={() => removeSet(setIndex)}
             >
               Remove Set
@@ -239,7 +252,11 @@ export default function ExerciseInput({
           </div>
         ))}
       </div>
-      <Button type="button" onClick={addSet} className="mt-3 w-full sm:w-auto">
+      <Button
+        type="button"
+        onClick={addSet}
+        className="h-10 mt-2 sm:mt-0 sm:ml-2 bg-gray-500 text-white hover:bg-yellow-400 hover:text-black font-bold rounded-full shadow-lg transition-all duration-200 hover:scale-105"
+      >
         + Add Set
       </Button>
     </section>

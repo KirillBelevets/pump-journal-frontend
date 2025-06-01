@@ -94,6 +94,16 @@ export default function TrainingSessionForm() {
 
   return (
     <div className="max-w-lg w-full mx-auto my-6 bg-gradient-to-br from-teal-50 via-white to-yellow-50 rounded-2xl shadow-lg border border-teal-100 p-4 sm:p-8 space-y-6">
+      <div className="mb-2">
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => router.back()}
+          className="h-10 rounded-full bg-gray-500 text-white hover:bg-yellow-400 hover:text-black font-bold shadow-lg transition-all duration-200 hover:scale-105 !px-3"
+        >
+          &larr; Back
+        </Button>
+      </div>
       <h1 className="text-2xl font-bold text-gray-700 text-center mb-4">
         New Training Session
       </h1>

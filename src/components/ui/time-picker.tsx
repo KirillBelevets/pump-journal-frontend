@@ -1,12 +1,14 @@
 "use client";
 
 import * as React from "react";
+import { ClockIcon } from "lucide-react";
 import {
   Popover,
   PopoverTrigger,
   PopoverContent,
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
+import clsx from "clsx";
 
 interface TimePickerProps {
   time: string;
@@ -27,15 +29,35 @@ export function TimePicker({ time, onTimeChange }: TimePickerProps) {
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button variant="outline">{time || "Select Time"}</Button>
+        <Button
+          type="button"
+          variant="outline"
+          className="h-10 w-full rounded-full px-4 bg-white border border-gray-300 text-gray-900 font-semibold shadow-sm transition-all duration-150 hover:border-yellow-400 focus:border-yellow-400 focus:ring-2 focus:ring-yellow-200"
+        >
+          <span className="flex w-full items-center justify-between">
+            <span
+              className={clsx(
+                "truncate",
+                time ? "" : "text-gray-400",
+                "min-w-[60px]"
+              )}
+            >
+              {" "}
+              {time || "Select Time"}
+            </span>
+            <ClockIcon className="ml-2 w-5 h-5 text-gray-400" />
+          </span>
+        </Button>
       </PopoverTrigger>
       <PopoverContent className="w-40 p-0">
         <div className="max-h-60 overflow-y-auto">
           {times.map((t) => (
             <button
               key={t}
-              className={`w-full text-left px-4 py-2 hover:bg-accent ${
-                t === time ? "bg-accent text-black" : ""
+              className={`w-full text-left px-4 py-2 transition-colors ${
+                t === time
+                  ? "bg-yellow-100 text-yellow-700 font-bold"
+                  : "hover:bg-yellow-50"
               }`}
               onClick={() => {
                 onTimeChange(t);

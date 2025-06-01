@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@700&family=Inter:wght@400;600&display=swap");
+
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -114,7 +116,21 @@
 
 body {
   background: linear-gradient(120deg, #f0fdfa 0%, #f9fafb 100%);
-  font-family: "Inter", "sans-serif";
+  font-family: "Inter", Arial, sans-serif;
+}
+
+h1,
+h2,
+h3,
+.font-title {
+  font-family: "Montserrat", "Bebas Neue", Arial, sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.stat,
+.stat-number {
+  font-family: "Share Tech Mono", monospace;
 }
 
 @layer base {

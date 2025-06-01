@@ -3,29 +3,10 @@
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useAuth } from "@/app/context/AuthContext";
-import { Input } from "@/components/ui/input";
+// import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-
-interface Set {
-  reps: number;
-  weight: number;
-  comment?: string;
-}
-interface Exercise {
-  name: string;
-  tempo: string;
-  rest: number;
-  sets: Set[];
-}
-interface TrainingSession {
-  _id: string;
-  date: string;
-  goal: string;
-  dayOfWeek?: string;
-  heartRate?: { start: number; end: number };
-  exercises: Exercise[];
-  sessionNote?: string;
-}
+import TrainingSessionEditForm from "../new/TrainingSessionEditForm";
+import { TrainingSession, TrainingSessionFormValues } from "@/types/training";
 
 export default function SessionDetailPage() {
   const router = useRouter();
@@ -37,10 +18,11 @@ export default function SessionDetailPage() {
   const [error, setError] = useState("");
 
   // Form state for editing
-  const [form, setForm] = useState<Omit<TrainingSession, "_id">>({
+  const [form, setForm] = useState<TrainingSessionFormValues>({
     date: "",
     goal: "",
     dayOfWeek: "",
+    timeOfDay: "",
     exercises: [],
     sessionNote: "",
     heartRate: { start: 0, end: 0 },
@@ -67,6 +49,7 @@ export default function SessionDetailPage() {
           date: data.date || "",
           goal: data.goal || "",
           dayOfWeek: data.dayOfWeek || "",
+          timeOfDay: data.timeOfDay || "",
           exercises: data.exercises || [],
           sessionNote: data.sessionNote || "",
           heartRate: data.heartRate || { start: 0, end: 0 },
@@ -81,54 +64,6 @@ export default function SessionDetailPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token, params.id]);
 
-  // Handle edits
-  const handleInput = (
-    field: keyof Omit<TrainingSession, "_id" | "exercises" | "heartRate">,
-    value: string
-  ) => {
-    setForm((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
-
-  const handleHeartRate = (key: "start" | "end", value: string) => {
-    setForm((prev) => {
-      const currentStart =
-        key === "start" ? Number(value) : prev.heartRate?.start ?? 0;
-      const currentEnd =
-        key === "end" ? Number(value) : prev.heartRate?.end ?? 0;
-
-      return {
-        ...prev,
-        heartRate: {
-          start: currentStart,
-          end: currentEnd,
-        },
-      };
-    });
-  };
-
-  const handleSave = async () => {
-    setError("");
-    try {
-      const res = await fetch(`http://localhost:3000/trainings/${params.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(form),
-      });
-      if (!res.ok) throw new Error("Failed to update session");
-      const updated = await res.json();
-      setSession(updated);
-      setEditMode(false);
-    } catch {
-      setError("Failed to save changes.");
-    }
-  };
-
   if (loading) return <p className="text-center mt-20">Loading...</p>;
   if (error) return <p className="text-center mt-20 text-red-500">{error}</p>;
   if (!session) return <p className="text-center mt-20">Session not found.</p>;
@@ -137,21 +72,24 @@ export default function SessionDetailPage() {
     <div className="max-w-2xl mx-auto mt-8 p-4 sm:p-8 rounded-2xl shadow-2xl bg-white/95 border space-y-8 relative">
       <div className="flex justify-between items-center mb-4">
         <Button
+          type="button"
           variant="outline"
           onClick={() => router.back()}
-          className="!px-3"
+          className="h-10 rounded-full bg-gray-500 text-white hover:bg-yellow-400 hover:text-black font-bold shadow-lg transition-all duration-200 hover:scale-105 !px-3"
         >
           &larr; Back
         </Button>
         <div className="flex gap-2">
           <Button
+            type="button"
             variant="outline"
             onClick={() => setEditMode(!editMode)}
-            className="!px-3"
+            className="h-10 rounded-full bg-gray-500 text-white hover:bg-yellow-400 hover:text-black font-bold shadow-lg transition-all duration-200 hover:scale-105 !px-3"
           >
             {editMode ? "Cancel" : "Edit"}
           </Button>
           <Button
+            type="button"
             variant="destructive"
             onClick={async () => {
               if (!confirm("Delete this session? This cannot be undone."))
@@ -170,7 +108,7 @@ export default function SessionDetailPage() {
                 setError("Delete failed.");
               }
             }}
-            className="!px-3"
+            className="h-10 rounded-full bg-gray-500 text-white hover:bg-yellow-400 hover:text-black font-bold shadow-lg transition-all duration-200 hover:scale-105 !px-3"
           >
             Delete
           </Button>
@@ -178,51 +116,37 @@ export default function SessionDetailPage() {
       </div>
 
       {editMode ? (
-        <div className="space-y-4">
-          <Input
-            type="date"
-            value={form.date}
-            onChange={(e) => handleInput("date", e.target.value)}
-          />
-          <Input
-            placeholder="Day of Week"
-            value={form.dayOfWeek}
-            onChange={(e) => handleInput("dayOfWeek", e.target.value)}
-          />
-          <Input
-            placeholder="Goal"
-            value={form.goal}
-            onChange={(e) => handleInput("goal", e.target.value)}
-          />
-          <div className="flex gap-2">
-            <Input
-              placeholder="Heart Rate Start"
-              type="number"
-              value={form.heartRate?.start ?? ""}
-              onChange={(e) => handleHeartRate("start", e.target.value)}
-            />
-            <Input
-              placeholder="Heart Rate End"
-              type="number"
-              value={form.heartRate?.end ?? ""}
-              onChange={(e) => handleHeartRate("end", e.target.value)}
-            />
-          </div>
-          <textarea
-            placeholder="Session Notes"
-            value={form.sessionNote || ""}
-            onChange={(e) => handleInput("sessionNote", e.target.value)}
-            className="w-full border rounded-md p-2 text-sm"
-          />
-
-          <Button
-            onClick={handleSave}
-            className="w-full rounded-full bg-teal-500 text-white hover:bg-yellow-400 hover:text-black font-bold shadow-lg mt-2"
-          >
-            Save
-          </Button>
-          {error && <p className="text-red-500 text-sm">{error}</p>}
-        </div>
+        <TrainingSessionEditForm
+          initial={form}
+          onSave={async (updated) => {
+            setError("");
+            setLoading(true);
+            try {
+              const res = await fetch(
+                `http://localhost:3000/trainings/${params.id}`,
+                {
+                  method: "PUT",
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                  },
+                  body: JSON.stringify(updated),
+                }
+              );
+              if (!res.ok) throw new Error("Failed to update session");
+              const updatedData = await res.json();
+              setSession(updatedData);
+              setForm(updatedData);
+              setEditMode(false);
+            } catch {
+              setError("Failed to save changes.");
+            } finally {
+              setLoading(false);
+            }
+          }}
+          loading={loading}
+          error={error}
+        />
       ) : (
         <div className="space-y-6">
           <div className="flex flex-wrap gap-2 items-center mb-2">
@@ -234,6 +158,22 @@ export default function SessionDetailPage() {
                 {session.dayOfWeek}
               </span>
             )}
+            {session.timeOfDay && (
+              <span className="inline-flex items-center px-2 py-1 rounded-lg bg-blue-100 text-blue-700 text-xs font-semibold tracking-wide">
+                <svg
+                  className="w-3 h-3 mr-1"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                >
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M12 6v6l4 2" />
+                </svg>
+                {session.timeOfDay}
+              </span>
+            )}
+
             {session.goal && (
               <span className="ml-2 px-3 py-1 rounded-lg bg-teal-50 text-teal-700 font-semibold text-sm">
                 {session.goal}
@@ -263,17 +203,18 @@ export default function SessionDetailPage() {
                   key={idx}
                   className="bg-slate-50 rounded-xl border p-3 mb-4 shadow"
                 >
-                  <div className="flex justify-between items-center mb-2">
+                  <div className="flex justify-between items-center mb-2 flex-wrap gap-2">
                     <span className="font-semibold text-teal-700">
                       {ex.name}
                     </span>
-                    <span className="bg-gray-50 rounded px-2 text-xs">
-                      {ex.tempo}
+                    <span className="inline-block rounded-lg px-2 py-1 text-xs font-semibold bg-teal-50 text-teal-700">
+                      Tempo: {ex.tempo}
                     </span>
-                    <span className="bg-gray-100 text-gray-800 px-2 py-1 rounded text-xs font-semibold">
+                    <span className="inline-block rounded-lg px-2 py-1 text-xs font-semibold bg-yellow-50 text-yellow-700">
                       Rest: {ex.rest}s
                     </span>
                   </div>
+
                   <ul className="ml-4 mt-2 text-sm">
                     {ex.sets.map((s, i) => (
                       <li key={i} className="flex gap-4 items-center py-1">

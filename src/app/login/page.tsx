@@ -60,7 +60,10 @@ export default function LoginPage() {
           required
         />
         {error && <p className="text-red-500 text-sm">{error}</p>}
-        <Button type="submit" className="w-full">
+        <Button
+          type="submit"
+          className="w-full h-10 rounded-full py-3 font-bold text-white bg-gray-500 hover:bg-yellow-400 hover:text-black shadow-lg transition-all duration-200 hover:scale-105"
+        >
           Log In
         </Button>
       </form>
