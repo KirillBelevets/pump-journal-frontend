@@ -6,6 +6,8 @@ import { useAuth } from "../context/AuthContext";
 import { Input } from "../../components/ui/input";
 import { Button } from "../../components/ui/button";
 
+const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -18,7 +20,7 @@ export default function LoginPage() {
     setError("");
 
     try {
-      const res = await fetch("http://localhost:3000/auth/login", {
+      const res = await fetch(`${apiBase}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
