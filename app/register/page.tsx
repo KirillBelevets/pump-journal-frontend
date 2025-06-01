@@ -6,8 +6,6 @@ import { useAuth } from "../context/AuthContext";
 import { Input } from "../../components/ui/input";
 import { Button } from "../../components/ui/button";
 
-const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
-
 export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -20,11 +18,14 @@ export default function RegisterPage() {
     setError("");
 
     try {
-      const res = await fetch(`${apiBase}/auth/register`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/auth/register`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        }
+      );
 
       if (!res.ok) {
         const err = await res.json();

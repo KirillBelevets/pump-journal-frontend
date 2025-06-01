@@ -20,8 +20,6 @@ const daysOfWeek = [
   "Saturday",
 ];
 
-const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
-
 export default function TrainingSessionForm() {
   const { token } = useAuth();
   const router = useRouter();
@@ -66,7 +64,7 @@ export default function TrainingSessionForm() {
     setError("");
     if (!token) return setError("Not authenticated");
     try {
-      const res = await fetch(`${apiBase}/trainings`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/trainings`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

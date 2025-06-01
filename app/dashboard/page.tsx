@@ -9,8 +9,6 @@ import { TrainingSession } from "../../types/training";
 import { DashboardFilters, DashboardFilterState } from "./DashboardFilters";
 
 export default function DashboardPage() {
-  const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
-
   const { token, setToken } = useAuth();
   const router = useRouter();
   const [sessions, setSessions] = useState<TrainingSession[]>([]);
@@ -32,7 +30,7 @@ export default function DashboardPage() {
 
     const fetchSessions = async () => {
       try {
-        const res = await fetch(`${apiBase}/trainings`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/trainings`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (!res.ok) throw new Error("Failed to fetch sessions");

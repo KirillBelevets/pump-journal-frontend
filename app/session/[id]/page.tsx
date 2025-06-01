@@ -11,8 +11,6 @@ import {
   TrainingSessionFormValues,
 } from "../../../types/training";
 
-const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
-
 export default function SessionDetailPage() {
   const router = useRouter();
   const params = useParams<{ id: string }>();
@@ -41,9 +39,12 @@ export default function SessionDetailPage() {
     }
     const fetchSession = async () => {
       try {
-        const res = await fetch(`${apiBase}/trainings/${params.id}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/trainings/${params.id}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
         if (!res.ok) throw new Error("Failed to fetch session");
         const data = await res.json();
         setSession(data);
@@ -97,10 +98,13 @@ export default function SessionDetailPage() {
               if (!confirm("Delete this session? This cannot be undone."))
                 return;
               try {
-                const res = await fetch(`${apiBase}/trainings/${params.id}`, {
-                  method: "DELETE",
-                  headers: { Authorization: `Bearer ${token}` },
-                });
+                const res = await fetch(
+                  `${process.env.NEXT_PUBLIC_API_URL}/trainings/${params.id}`,
+                  {
+                    method: "DELETE",
+                    headers: { Authorization: `Bearer ${token}` },
+                  }
+                );
                 if (!res.ok) throw new Error("Failed to delete");
                 router.push("/dashboard");
               } catch {
@@ -121,14 +125,17 @@ export default function SessionDetailPage() {
             setError("");
             setLoading(true);
             try {
-              const res = await fetch(`${apiBase}/trainings/${params.id}`, {
-                method: "PUT",
-                headers: {
-                  "Content-Type": "application/json",
-                  Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify(updated),
-              });
+              const res = await fetch(
+                `${process.env.NEXT_PUBLIC_API_URL}/trainings/${params.id}`,
+                {
+                  method: "PUT",
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                  },
+                  body: JSON.stringify(updated),
+                }
+              );
               if (!res.ok) throw new Error("Failed to update session");
               const updatedData = await res.json();
               setSession(updatedData);
