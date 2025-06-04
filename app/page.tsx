@@ -42,10 +42,10 @@ export default function Home() {
         <div className="flex flex-col sm:flex-row gap-4">
           {!token && (
             <>
-              <Link href="/register">
+              <Link href="/auth/register">
                 <Button className="px-8 py-2 text-base">Register</Button>
               </Link>
-              <Link href="/login">
+              <Link href="/auth/login">
                 <Button variant="outline" className="px-8 py-2 text-base">
                   Login
                 </Button>
