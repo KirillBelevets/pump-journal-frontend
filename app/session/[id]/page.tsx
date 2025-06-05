@@ -34,7 +34,7 @@ export default function SessionDetailPage() {
   // Fetch the session by ID
   useEffect(() => {
     if (!token) {
-      router.push("/login");
+      router.push("/auth/login");
       return;
     }
     const fetchSession = async () => {

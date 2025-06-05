@@ -24,15 +24,18 @@ export default function DashboardPage() {
 
   useEffect(() => {
     if (!token) {
-      router.push("/login");
+      router.push("/auth/login");
       return;
     }
 
     const fetchSessions = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/trainings`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/trainings`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
         if (!res.ok) throw new Error("Failed to fetch sessions");
         const data = await res.json();
         setSessions(data);
@@ -52,7 +55,7 @@ export default function DashboardPage() {
 
   const handleLogout = () => {
     setToken(null);
-    router.push("/login");
+    router.push("/auth/login");
   };
 
   if (!token) return <p className="text-center mt-20">Checking auth...</p>;
