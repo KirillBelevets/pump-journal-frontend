@@ -43,10 +43,15 @@ export default function Home() {
           {!token && (
             <>
               <Link href="/auth/register">
-                <Button className="px-8 py-2 text-base">Register</Button>
+                <Button className="px-8 py-2 text-base font-bold text-white bg-yellow-400 hover:bg-yellow-500 hover:text-black shadow-md transition-all duration-200 hover:scale-105">
+                  Register
+                </Button>
               </Link>
               <Link href="/auth/login">
-                <Button variant="outline" className="px-8 py-2 text-base">
+                <Button
+                  variant="outline"
+                  className="px-8 py-2 text-base font-bold text-gray-800 bg-gray-200 hover:bg-yellow-400 hover:text-black shadow-md transition-all duration-200 hover:scale-105"
+                >
                   Login
                 </Button>
               </Link>
@@ -55,10 +60,15 @@ export default function Home() {
           {token && (
             <>
               <Link href="/dashboard">
-                <Button className="px-8 py-2 text-base">Go to Dashboard</Button>
+                <Button className="px-8 py-2 text-base font-bold text-white bg-yellow-400 hover:bg-yellow-500 hover:text-black shadow-md transition-all duration-200 hover:scale-105">
+                  Go to Dashboard
+                </Button>
               </Link>
               <Link href="/session/new">
-                <Button variant="outline" className="px-8 py-2 text-base">
+                <Button
+                  variant="outline"
+                  className="px-8 py-2 text-base font-bold text-gray-800 bg-gray-200 hover:bg-yellow-400 hover:text-black shadow-md transition-all duration-200 hover:scale-105"
+                >
                   Add New Session
                 </Button>
               </Link>
