@@ -90,6 +90,12 @@ export default function DashboardPage() {
     <div className="max-w-2xl mx-auto mt-10 px-2 space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold text-teal-700">Pump Journal</h1>
+        <Link
+          href="/settings/change-password"
+          className="text-sm text-blue-600 underline"
+        >
+          Change Password
+        </Link>
         <Button
           onClick={handleLogout}
           className="bg-gray-200 hover:bg-yellow-400 hover:text-black text-gray-800 font-bold transition"

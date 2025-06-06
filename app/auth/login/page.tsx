@@ -67,6 +67,15 @@ export default function LoginPage() {
           Log In
         </Button>
       </form>
+
+      <p className="text-sm text-center text-muted-foreground mt-4">
+        <a
+          href="/auth/forgot-password"
+          className="text-blue-600 hover:underline font-medium"
+        >
+          Forgot your password?
+        </a>
+      </p>
     </div>
   );
 }

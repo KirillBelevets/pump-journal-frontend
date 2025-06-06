@@ -18,11 +18,14 @@ export default function RegisterPage() {
     setError("");
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/register`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/auth/register`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        }
+      );
 
       if (!res.ok) {
         const err = await res.json();
@@ -64,6 +67,16 @@ export default function RegisterPage() {
           Create Account
         </Button>
       </form>
+
+      <p className="text-sm text-center text-muted-foreground mt-4">
+        Already have an account?
+        <a
+          href="/auth/login"
+          className="text-blue-600 hover:underline font-medium"
+        >
+          Log in
+        </a>
+      </p>
     </div>
   );
 }

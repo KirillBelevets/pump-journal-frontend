@@ -35,8 +35,6 @@ export default function TrainingSessionEditForm({
 }) {
   // Handle Date as Date object for DatePicker
 
-  console.log({ initial });
-
   const [date, setDate] = useState<Date | undefined>(
     initial.date ? new Date(initial.date) : undefined
   );
