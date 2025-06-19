@@ -9,6 +9,7 @@ import ExerciseInput, { Exercise } from "./ExerciseInput";
 import { Label } from "../../../components/ui/label";
 import { DatePicker } from "../../../components/ui/date-picker";
 import { TimePicker } from "../../../components/ui/time-picker";
+import { FocusWrapper } from "./FocusWrapper";
 
 const daysOfWeek = [
   "Sunday",
@@ -137,34 +138,49 @@ export default function TrainingSessionForm() {
 
         <div className="space-y-1">
           <Label htmlFor="goal">Goal</Label>
-          <Input
-            id="goal"
-            placeholder="Training goal"
-            value={goal}
-            onChange={(e) => setGoal(e.target.value)}
-          />
+          <FocusWrapper selectOnFocus>
+            {(ref) => (
+              <Input
+                ref={ref}
+                id="goal"
+                placeholder="Training goal"
+                value={goal}
+                onChange={(e) => setGoal(e.target.value)}
+              />
+            )}
+          </FocusWrapper>
         </div>
 
         <div className="flex gap-4">
           <div className="space-y-1 flex-1">
             <Label htmlFor="heartRateStart">Heart Rate (Start)</Label>
-            <Input
-              id="heartRateStart"
-              placeholder="e.g. 90"
-              type="number"
-              value={heartRateStart}
-              onChange={(e) => setHeartRateStart(e.target.value)}
-            />
+            <FocusWrapper selectOnFocus>
+              {(ref) => (
+                <Input
+                  ref={ref}
+                  id="heartRateStart"
+                  placeholder="e.g. 90"
+                  type="number"
+                  value={heartRateStart}
+                  onChange={(e) => setHeartRateStart(e.target.value)}
+                />
+              )}
+            </FocusWrapper>
           </div>
           <div className="space-y-1 flex-1">
             <Label htmlFor="heartRateEnd">Heart Rate (End)</Label>
-            <Input
-              id="heartRateEnd"
-              placeholder="e.g. 100"
-              type="number"
-              value={heartRateEnd}
-              onChange={(e) => setHeartRateEnd(e.target.value)}
-            />
+            <FocusWrapper selectOnFocus>
+              {(ref) => (
+                <Input
+                  ref={ref}
+                  id="heartRateEnd"
+                  placeholder="e.g. 100"
+                  type="number"
+                  value={heartRateEnd}
+                  onChange={(e) => setHeartRateEnd(e.target.value)}
+                />
+              )}
+            </FocusWrapper>
           </div>
         </div>
 

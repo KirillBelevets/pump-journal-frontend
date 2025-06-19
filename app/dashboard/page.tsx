@@ -161,7 +161,7 @@ export default function DashboardPage() {
       <div className="pb-6 pt-2">
         <Button
           onClick={() => router.push("/session/new")}
-          className="w-full rounded-full py-3 font-bold text-gray-900 bg-gray-300 hover:bg-yellow-400 hover:text-black shadow-md transition-colors"
+          className="w-full rounded-full py-3 mb-16 font-bold text-gray-900 bg-gray-300 hover:bg-yellow-400 hover:text-black shadow-md transition-colors"
         >
           + Add Session
         </Button>
