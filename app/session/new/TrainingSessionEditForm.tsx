@@ -319,63 +319,90 @@ export default function TrainingSessionEditForm({
                 </div>
               </div>
 
-              <div className="space-y-2 mt-3">
+              <div className="space-y-4 mt-3">
                 {ex.sets.map((set, setIdx) => (
-                  <div key={setIdx} className="flex gap-2 items-center">
-                    <FocusWrapper selectOnFocus>
-                      {(ref: RefObject<Focusable | null>) => (
-                        <Input
-                          ref={ref}
-                          placeholder="Reps"
-                          type="number"
-                          value={set.reps}
-                          onChange={(e) =>
-                            handleSetChange(exIdx, setIdx, {
-                              reps: Number(e.target.value),
-                            })
-                          }
-                          className="w-20"
-                        />
-                      )}
-                    </FocusWrapper>
-                    <FocusWrapper selectOnFocus>
-                      {(ref: RefObject<Focusable | null>) => (
-                        <Input
-                          ref={ref}
-                          placeholder="Weight"
-                          type="number"
-                          value={set.weight}
-                          onChange={(e) =>
-                            handleSetChange(exIdx, setIdx, {
-                              weight: Number(e.target.value),
-                            })
-                          }
-                          className="w-20"
-                        />
-                      )}
-                    </FocusWrapper>
-                    <FocusWrapper selectOnFocus>
-                      {(ref: RefObject<Focusable | null>) => (
-                        <Input
-                          ref={ref}
-                          placeholder="Comment"
-                          value={set.comment || ""}
-                          onChange={(e) =>
-                            handleSetChange(exIdx, setIdx, {
-                              comment: e.target.value,
-                            })
-                          }
-                          className="flex-1"
-                        />
-                      )}
-                    </FocusWrapper>
-                    <Button
-                      type="button"
-                      onClick={() => removeSet(exIdx, setIdx)}
-                      className="h-10 ml-2 bg-gray-500 text-white hover:bg-yellow-400 hover:text-black font-bold rounded-full shadow-lg transition-all duration-200 hover:scale-105"
-                    >
-                      Remove
-                    </Button>
+                  <div
+                    key={setIdx}
+                    className="flex flex-col gap-2 sm:gap-3 border border-gray-200 rounded-lg p-3"
+                  >
+                    {/* Row 1: Reps & Weight */}
+                    <div className="flex gap-2">
+                      <div className="flex-1 min-w-0 space-y-1">
+                        <Label htmlFor={`reps-${exIdx}-${setIdx}`}>Reps</Label>
+                        <FocusWrapper selectOnFocus>
+                          {(ref: RefObject<Focusable | null>) => (
+                            <Input
+                              ref={ref}
+                              id={`reps-${exIdx}-${setIdx}`}
+                              type="number"
+                              placeholder="e.g. 10"
+                              value={set.reps}
+                              onChange={(e) =>
+                                handleSetChange(exIdx, setIdx, {
+                                  reps: Number(e.target.value),
+                                })
+                              }
+                            />
+                          )}
+                        </FocusWrapper>
+                      </div>
+
+                      <div className="flex-1 min-w-0 space-y-1">
+                        <Label htmlFor={`weight-${exIdx}-${setIdx}`}>
+                          Weight
+                        </Label>
+                        <FocusWrapper selectOnFocus>
+                          {(ref: RefObject<Focusable | null>) => (
+                            <Input
+                              ref={ref}
+                              id={`weight-${exIdx}-${setIdx}`}
+                              type="number"
+                              placeholder="e.g. 50"
+                              value={set.weight}
+                              onChange={(e) =>
+                                handleSetChange(exIdx, setIdx, {
+                                  weight: Number(e.target.value),
+                                })
+                              }
+                            />
+                          )}
+                        </FocusWrapper>
+                      </div>
+                    </div>
+
+                    {/* Row 2: Comment & Remove */}
+                    <div className="flex gap-2 items-end">
+                      <div className="flex-1 space-y-1">
+                        <Label htmlFor={`comment-${exIdx}-${setIdx}`}>
+                          Comment
+                        </Label>
+                        <FocusWrapper selectOnFocus>
+                          {(ref: RefObject<Focusable | null>) => (
+                            <Input
+                              ref={ref}
+                              id={`comment-${exIdx}-${setIdx}`}
+                              placeholder="Optional note"
+                              value={set.comment || ""}
+                              onChange={(e) =>
+                                handleSetChange(exIdx, setIdx, {
+                                  comment: e.target.value,
+                                })
+                              }
+                            />
+                          )}
+                        </FocusWrapper>
+                      </div>
+
+                      <div className="pt-1 sm:pt-0">
+                        <Button
+                          type="button"
+                          onClick={() => removeSet(exIdx, setIdx)}
+                          className="h-10 bg-gray-500 text-white hover:bg-yellow-400 hover:text-black font-bold rounded-full shadow-lg transition-all duration-200 hover:scale-105"
+                        >
+                          Remove
+                        </Button>
+                      </div>
+                    </div>
                   </div>
                 ))}
               </div>
