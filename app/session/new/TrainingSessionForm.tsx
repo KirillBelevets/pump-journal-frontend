@@ -10,6 +10,7 @@ import { Label } from "../../../components/ui/label";
 import { DatePicker } from "../../../components/ui/date-picker";
 import { TimePicker } from "../../../components/ui/time-picker";
 import { FocusWrapper } from "./FocusWrapper";
+import { trainingSessionSchema } from "../../../lib/validation/trainingSessionSchema";
 
 const daysOfWeek = [
   "Sunday",
@@ -64,6 +65,40 @@ export default function TrainingSessionForm() {
     e.preventDefault();
     setError("");
     if (!token) return setError("Not authenticated");
+
+    // Prepare data for validation
+    const formData = {
+      date: date ? date.toISOString().slice(0, 10) : "",
+      dayOfWeek,
+      timeOfDay,
+      goal,
+      heartRate: {
+        start: Number(heartRateStart),
+        end: Number(heartRateEnd),
+      },
+      exercises: exercises.map((ex) => ({
+        ...ex,
+        rest: Number(ex.rest),
+        comment: ex.comment ?? "",
+        sets: ex.sets.map((set) => ({
+          reps: Number(set.reps),
+          weight: Number(set.weight),
+        })),
+      })),
+      sessionNote,
+    };
+
+    // Validate with Zod
+    const result = trainingSessionSchema.safeParse(formData);
+    if (!result.success) {
+      setError(
+        result.error.issues
+          .map((e: { message: string }) => e.message)
+          .join("; ")
+      );
+      return;
+    }
+
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/trainings`, {
         method: "POST",
@@ -71,18 +106,7 @@ export default function TrainingSessionForm() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          date: date ? date.toISOString().slice(0, 10) : "",
-          dayOfWeek,
-          timeOfDay,
-          goal,
-          heartRate: {
-            start: Number(heartRateStart),
-            end: Number(heartRateEnd),
-          },
-          exercises,
-          sessionNote,
-        }),
+        body: JSON.stringify(formData),
       });
 
       if (!res.ok) throw new Error("Failed to submit session");

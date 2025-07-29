@@ -8,6 +8,7 @@ export interface Exercise {
   name: string;
   tempo: string;
   rest: number;
+  comment?: string;
   sets: Set[];
 }
 

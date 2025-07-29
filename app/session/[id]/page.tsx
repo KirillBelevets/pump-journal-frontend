@@ -199,8 +199,6 @@ export default function SessionDetailPage() {
           <div>
             <h2 className="font-bold text-lg mb-2 mt-3">Exercises</h2>
             {session.exercises.map((ex, idx) => {
-              console.log({ ex });
-
               return (
                 <div
                   key={idx}
@@ -210,6 +208,11 @@ export default function SessionDetailPage() {
                     <span className="font-semibold text-teal-700">
                       {ex.name}
                     </span>
+                    {ex.comment && (
+                      <span className="inline-block text-xs italic text-slate-600 bg-slate-100 rounded px-2 py-1 max-w-xs truncate align-middle">
+                        {ex.comment}
+                      </span>
+                    )}
                     <span className="inline-block rounded-lg px-2 py-1 text-xs font-semibold bg-teal-50 text-teal-700">
                       Tempo: {ex.tempo}
                     </span>

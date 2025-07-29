@@ -43,7 +43,10 @@ export default function TrainingSessionEditForm({
     timeOfDay: initial.timeOfDay || "",
     exercises:
       initial.exercises && initial.exercises.length > 0
-        ? initial.exercises
+        ? initial.exercises.map((ex) => ({
+            ...ex,
+            comment: ex.comment ?? "",
+          }))
         : [],
   });
 
@@ -268,22 +271,22 @@ export default function TrainingSessionEditForm({
                 <div className="flex flex-wrap sm:flex-nowrap gap-3 items-end">
                   <div className="flex-1 min-w-[100px] space-y-1">
                     <Label htmlFor={`tempo-${exIdx}`}>Tempo</Label>
-                    <FocusWrapper selectOnFocus>
-                      {(ref) => (
-                        <Input
-                          ref={ref}
-                          id={`tempo-${exIdx}`}
-                          placeholder="e.g. 3-1-1"
-                          value={ex.tempo}
-                          onChange={(e) =>
-                            handleExerciseChange(exIdx, {
-                              tempo: e.target.value,
-                            })
-                          }
-                          className="w-full"
-                        />
-                      )}
-                    </FocusWrapper>
+                    <select
+                      id={`tempo-${exIdx}`}
+                      className="w-full h-10 rounded-full border border-gray-300 px-4"
+                      value={ex.tempo}
+                      onChange={(e) =>
+                        handleExerciseChange(exIdx, { tempo: e.target.value })
+                      }
+                    >
+                      <option value="">Select tempo...</option>
+                      <option value="2-0-2">2-0-2 (Normal speed)</option>
+                      <option value="2-1-2">2-1-2 (Pause bottom)</option>
+                      <option value="3-0-1">3-0-1 (Explosive up)</option>
+                      <option value="3-1-3">3-1-3 (Controlled)</option>
+                      <option value="1-0-1">1-0-1 (Fast)</option>
+                      <option value="custom">Custom…</option>
+                    </select>
                   </div>
 
                   <div className="flex-1 min-w-[80px] space-y-1">
@@ -319,14 +322,31 @@ export default function TrainingSessionEditForm({
                 </div>
               </div>
 
+              {/* Exercise-level comment/note */}
+              <div className="space-y-1 mt-2">
+                <Label htmlFor={`comment-${exIdx}`}>Notes</Label>
+                <textarea
+                  id={`comment-${exIdx}`}
+                  placeholder="Any notes for this exercise…"
+                  value={ex.comment || ""}
+                  onChange={(e) =>
+                    handleExerciseChange(exIdx, { comment: e.target.value })
+                  }
+                  className="w-full min-h-[44px] max-h-[120px] rounded-full px-4 py-2 bg-slate-50 border border-gray-300 shadow-sm font-semibold text-gray-900 transition-all duration-150 focus:border-yellow-400 focus:ring-2 focus:ring-yellow-200 placeholder-gray-400 resize-y"
+                />
+              </div>
+
               <div className="space-y-4 mt-3">
                 {ex.sets.map((set, setIdx) => (
                   <div
                     key={setIdx}
                     className="flex flex-col gap-2 sm:gap-3 border border-gray-200 rounded-lg p-3"
                   >
-                    {/* Row 1: Reps & Weight */}
-                    <div className="flex gap-2">
+                    {/* Row 1: Set label, Reps & Weight */}
+                    <div className="flex gap-2 items-center">
+                      <span className="font-semibold text-sm mr-2">
+                        Set {setIdx + 1}
+                      </span>
                       <div className="flex-1 min-w-0 space-y-1">
                         <Label htmlFor={`reps-${exIdx}-${setIdx}`}>Reps</Label>
                         <FocusWrapper selectOnFocus>
@@ -370,38 +390,14 @@ export default function TrainingSessionEditForm({
                       </div>
                     </div>
 
-                    {/* Row 2: Comment & Remove */}
-                    <div className="flex gap-2 items-end">
-                      <div className="flex-1 space-y-1">
-                        <Label htmlFor={`comment-${exIdx}-${setIdx}`}>
-                          Comment
-                        </Label>
-                        <FocusWrapper selectOnFocus>
-                          {(ref: RefObject<Focusable | null>) => (
-                            <Input
-                              ref={ref}
-                              id={`comment-${exIdx}-${setIdx}`}
-                              placeholder="Optional note"
-                              value={set.comment || ""}
-                              onChange={(e) =>
-                                handleSetChange(exIdx, setIdx, {
-                                  comment: e.target.value,
-                                })
-                              }
-                            />
-                          )}
-                        </FocusWrapper>
-                      </div>
-
-                      <div className="pt-1 sm:pt-0">
-                        <Button
-                          type="button"
-                          onClick={() => removeSet(exIdx, setIdx)}
-                          className="h-10 bg-gray-500 text-white hover:bg-yellow-400 hover:text-black font-bold rounded-full shadow-lg transition-all duration-200 hover:scale-105"
-                        >
-                          Remove
-                        </Button>
-                      </div>
+                    <div className="pt-1 sm:pt-0">
+                      <Button
+                        type="button"
+                        onClick={() => removeSet(exIdx, setIdx)}
+                        className="h-10 bg-gray-500 text-white hover:bg-yellow-400 hover:text-black font-bold rounded-full shadow-lg transition-all duration-200 hover:scale-105"
+                      >
+                        Remove
+                      </Button>
                     </div>
                   </div>
                 ))}
