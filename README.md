@@ -1,4 +1,20 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Pump Journal - Fitness Tracking App
+
+A modern fitness tracking application built with Next.js and deployed with a Node.js backend.
+
+## 🚀 **Backend Connection**
+
+The backend API is live and ready: `https://pump-journal-backend-production.up.railway.app`
+
+### Quick Setup
+
+```bash
+# Run the setup script to configure backend connection
+./setup-backend-connection.sh
+
+# Or manually create .env.local with:
+echo "NEXT_PUBLIC_API_URL=https://pump-journal-backend-production.up.railway.app" > .env.local
+```
 
 ## Getting Started
 
